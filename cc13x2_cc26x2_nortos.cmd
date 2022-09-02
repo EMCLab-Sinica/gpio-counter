@@ -32,12 +32,12 @@
 
 --stack_size=1024   /* C stack is also used for ISR stack */
 
-HEAPSIZE = 0x4000;  /* Size of heap buffer used by HeapMem */
+--heap_size=16384
 
 /* Retain interrupt vector table variable                                    */
 --retain=g_pfnVectors
 /* Override default entry point.                                             */
---entry_point ResetISR
+--entry_point resetISR
 /* Allow main() to take args                                                 */
 --args 0x8
 /* Suppress warnings and errors:                                             */
@@ -53,7 +53,7 @@ HEAPSIZE = 0x4000;  /* Size of heap buffer used by HeapMem */
 /* modifications in your CCS project and leave this file alone.              */
 /*                                                                           */
 /* --heap_size=0                                                             */
-/* --stack_size=256                                                          */
+/* --stack_size=2048                                                         */
 /* --library=rtsv7M3_T_le_eabi.lib                                           */
 
 /* The starting address of the application.  Normally the interrupt vectors  */
@@ -92,16 +92,16 @@ MEMORY
 SECTIONS
 {
     .intvecs        :   > FLASH_BASE
-    .text           :   >> FLASH
+    .text           :   > FLASH
     .TI.ramfunc     : {} load=FLASH, run=SRAM, table(BINIT)
-    .const          :   >> FLASH
-    .constdata      :   >> FLASH
-    .rodata         :   >> FLASH
+    .const          :   > FLASH
+    .constdata      :   > FLASH
+    .rodata         :   > FLASH
     .binit          :   > FLASH
     .cinit          :   > FLASH
     .pinit          :   > FLASH
     .init_array     :   > FLASH
-    .emb_text       :   >> FLASH
+    .emb_text       :   > FLASH
     .ccfg           :   > FLASH (HIGH)
 
     .vtable         :   > SRAM
@@ -112,12 +112,7 @@ SECTIONS
     .sysmem         :   > SRAM
     .stack          :   > SRAM (HIGH)
     .nonretenvar    :   > SRAM
-    /* Heap buffer used by HeapMem */
-    .priheap   : {
-        __primary_heap_start__ = .;
-        . += HEAPSIZE;
-        __primary_heap_end__ = .;
-    } > SRAM align 8
+
     .gpram          :   > GPRAM
     .log_data       :   > LOG_DATA, type = COPY
 }

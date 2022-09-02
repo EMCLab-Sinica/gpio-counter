@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020, Texas Instruments Incorporated
+ * Copyright (c) 2017-2020, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,55 +32,29 @@
  */
 
 /*
- *  ======== main_tirtos.c ========
+ *  ======== main_nortos.c ========
  */
 #include <stdint.h>
+#include <stddef.h>
 
-/* POSIX Header files */
-#include <pthread.h>
-
-/* RTOS header files */
-#include <ti/sysbios/BIOS.h>
+#include <NoRTOS.h>
 
 #include <ti/drivers/Board.h>
 
 extern void *mainThread(void *arg0);
-
-/* Stack size in bytes */
-#define THREADSTACKSIZE    1024
 
 /*
  *  ======== main ========
  */
 int main(void)
 {
-    pthread_t           thread;
-    pthread_attr_t      attrs;
-    struct sched_param  priParam;
-    int                 retc;
-
     Board_init();
 
-    /* Initialize the attributes structure with default values */
-    pthread_attr_init(&attrs);
+    /* Start NoRTOS */
+    NoRTOS_start();
 
-    /* Set priority, detach state, and stack size attributes */
-    priParam.sched_priority = 1;
-    retc = pthread_attr_setschedparam(&attrs, &priParam);
-    retc |= pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
-    retc |= pthread_attr_setstacksize(&attrs, THREADSTACKSIZE);
-    if (retc != 0) {
-        /* failed to set attributes */
-        while (1) {}
-    }
+    /* Call mainThread function */
+    mainThread(NULL);
 
-    retc = pthread_create(&thread, &attrs, mainThread, NULL);
-    if (retc != 0) {
-        /* pthread_create() failed */
-        while (1) {}
-    }
-
-    BIOS_start();
-
-    return (0);
+    while (1) {}
 }
