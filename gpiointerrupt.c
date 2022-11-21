@@ -84,11 +84,11 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
     if (!new_value_power) {
         counter_power++;
         if (last_value_power) {
-            //my_printf("POWER_OFF\r\n");
+            my_printf("POWER_OFF\r\n");
         }
     } else if (new_value_power && !last_value_power) {
-        //my_printf("POWER_ON\r\n");
-        //my_printf("R%" PRIu32 "\r\n", counter_power);
+        my_printf("POWER_ON\r\n");
+        my_printf("R%" PRIu32 "\r\n", counter_power);
         counter_power = 0;
     }
     counter_inference++;
