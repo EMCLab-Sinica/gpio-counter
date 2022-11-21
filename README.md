@@ -1,3 +1,7 @@
+# Flashing
+
+* In `targetConfigs/CC1352R1F3.ccxml`, replace the serial number in `Debug Probe Selection`. The serial number of attached XDS110 debug probes can be checked with `ccs/ccs_base/common/uscif/xds110/xdsdfu -e`.
+
 # Wire connections
 
 * DIO17 (boosterpack.31) <-> P8.0 on MSP430 or P5.5 on MSP432 (`GPIO_COUNTER_PORT`/`GPIO_COUNTER_PIN`): for counting inferences
