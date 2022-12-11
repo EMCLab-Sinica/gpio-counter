@@ -119,11 +119,6 @@ void *mainThread(void *arg0) {
     GPIO_init();
     Timer_init();
 
-    /* Configure the the button pin */
-    GPIO_setConfig(CONFIG_GPIO_INPUT_POWER,     GPIO_CFG_INPUT | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE);
-    GPIO_setConfig(CONFIG_GPIO_INPUT_INFERENCE, GPIO_CFG_INPUT | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE);
-    GPIO_setConfig(CONFIG_GPIO_INPUT_LAYER,     GPIO_CFG_INPUT | GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_NONE);
-
     /*
      * Setting up the timer in continuous callback mode that calls the callback
      * function every 1,000 microseconds, or 1 millisecond.
