@@ -67,15 +67,23 @@ void my_printf(const char* format,...)
     va_end(arg);
 }
 
+#define N_INDICATORS 3
+
 void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
     // TODO: move calls to my_printf out of the interrupt handler
     // Probably using SemaphoreP_* functions?
-    static uint32_t last_value_power = 0, last_value_inference = 0, last_value_layer = 0;
-    static uint32_t counter_power = 0, counter_inference = 0, counter_layer = 0,
+    static uint32_t last_value_power = 0, last_value_inference = 0;
+    static uint32_t counter_power = 0, counter_inference = 0,
                     accumulated_recharging_time = 0, power_failures = 0;
     uint8_t new_value_power = GPIO_read(CONFIG_GPIO_INPUT_POWER),
-            new_value_inference = GPIO_read(CONFIG_GPIO_INPUT_INFERENCE),
-            new_value_layer = GPIO_read(CONFIG_GPIO_INPUT_LAYER);
+            new_value_inference = GPIO_read(CONFIG_GPIO_INPUT_INFERENCE);
+    uint8_t new_value_indicators[N_INDICATORS] = {
+        GPIO_read(CONFIG_GPIO_INPUT_INDICATOR0),
+        GPIO_read(CONFIG_GPIO_INPUT_INDICATOR1),
+        GPIO_read(CONFIG_GPIO_INPUT_INDICATOR2),
+    };
+    static uint8_t last_value_indicators[N_INDICATORS] = { 0 };
+    static uint32_t counter_indicators[N_INDICATORS] = { 0 };
     if (new_value_inference && !last_value_inference && new_value_power) {
         my_printf(".%" PRIu32 "\r\n", counter_inference);
         my_printf("A%" PRIu32 "\r\n", counter_inference - accumulated_recharging_time);
@@ -84,9 +92,11 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
         accumulated_recharging_time = 0;
         power_failures = 0;
     }
-    if (new_value_layer && !last_value_layer && new_value_power) {
-        my_printf("L%" PRIu32 "\r\n", counter_layer);
-        counter_layer = 0;
+    for (uint8_t idx = 0; idx < N_INDICATORS; idx++) {
+        if (new_value_indicators[idx] && !last_value_indicators[idx] && new_value_power) {
+            my_printf("I%d=%" PRIu32 "\r\n", idx, counter_indicators[idx]);
+            counter_indicators[idx] = 0;
+        }
     }
     if (!new_value_power) {
         counter_power++;
@@ -101,10 +111,12 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
         counter_power = 0;
     }
     counter_inference++;
-    counter_layer++;
     last_value_power = new_value_power;
     last_value_inference = new_value_inference;
-    last_value_layer = new_value_layer;
+    for (uint8_t idx = 0; idx < N_INDICATORS; idx++) {
+        counter_indicators[idx]++;
+        last_value_indicators[idx] = new_value_indicators[idx];
+    }
 }
 
 /*
