@@ -67,7 +67,7 @@ void my_printf(const char* format,...)
     va_end(arg);
 }
 
-#define N_INDICATORS 3
+#define N_INDICATORS 4
 
 void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
     // TODO: move calls to my_printf out of the interrupt handler
@@ -81,11 +81,13 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
         GPIO_read(CONFIG_GPIO_INPUT_INDICATOR0),
         GPIO_read(CONFIG_GPIO_INPUT_INDICATOR1),
         GPIO_read(CONFIG_GPIO_INPUT_INDICATOR2),
+        GPIO_read(CONFIG_GPIO_INPUT_INDICATOR3),
     };
     static uint8_t last_value_indicators[N_INDICATORS] = { 0 };
     static uint32_t counter_indicators[N_INDICATORS] = { 0 };
+    static uint32_t counter_since_boot = 0;
     if (new_value_inference && !last_value_inference && new_value_power) {
-        my_printf(".%" PRIu32 "\r\n", counter_inference);
+        my_printf(".%" PRIu32 " PF=%" PRIu32 "\r\n", counter_inference, power_failures);
         my_printf("A%" PRIu32 "\r\n", counter_inference - accumulated_recharging_time);
         my_printf("F%" PRIu32 "\r\n", power_failures);
         counter_inference = 0;
@@ -94,7 +96,7 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
     }
     for (uint8_t idx = 0; idx < N_INDICATORS; idx++) {
         if (new_value_indicators[idx] && !last_value_indicators[idx] && new_value_power) {
-            my_printf("I%d=%" PRIu32 "\r\n", idx, counter_indicators[idx]);
+            my_printf("I%d=%" PRIu32 ",%" PRIu32 "\r\n", idx, counter_indicators[idx], counter_since_boot);
             counter_indicators[idx] = 0;
         }
     }
@@ -102,6 +104,8 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
         counter_power++;
         if (last_value_power) {
             my_printf("POWER_OFF\r\n");
+            my_printf("p%" PRIu32 "\r\n", counter_since_boot);
+            counter_since_boot = 0;
         }
     } else if (new_value_power && !last_value_power) {
         my_printf("POWER_ON\r\n");
@@ -109,6 +113,8 @@ void timerCallback(Timer_Handle myHandle, int_fast16_t status) {
         accumulated_recharging_time += counter_power;
         power_failures++;
         counter_power = 0;
+    } else if (new_value_power) {
+        counter_since_boot++;
     }
     counter_inference++;
     last_value_power = new_value_power;
@@ -155,7 +161,7 @@ void *mainThread(void *arg0) {
 
     /* Create a UART where the default read and write mode is BLOCKING */
     UART2_Params_init(&uartParams);
-    uartParams.baudRate = 9600;
+    uartParams.baudRate = 115200;
 
     uart = UART2_open(CONFIG_UART2_0, &uartParams);
 

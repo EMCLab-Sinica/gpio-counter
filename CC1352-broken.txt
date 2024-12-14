@@ -1,0 +1,11 @@
+High voltage when disconnected
+DIO4
+DIO5
+DIO12
+DIO13
+DIO17
+DIO20
+
+LPRST
+5V
+3V3

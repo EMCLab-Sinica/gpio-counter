@@ -12,8 +12,9 @@ const GPIO   = scripting.addModule("/ti/drivers/GPIO");
 const GPIO1  = GPIO.addInstance();
 const GPIO2  = GPIO.addInstance();
 const GPIO3  = GPIO.addInstance();
+const GPIO4  = GPIO.addInstance();
+const GPIO5  = GPIO.addInstance();
 const GPIO6  = GPIO.addInstance();
-const GPIO7  = GPIO.addInstance();
 const RTOS   = scripting.addModule("/ti/drivers/RTOS");
 const Timer  = scripting.addModule("/ti/drivers/Timer", {}, false);
 const Timer1 = Timer.addInstance();
@@ -25,7 +26,7 @@ const UART21 = UART2.addInstance();
  */
 GPIO1.$name           = "CONFIG_GPIO_INPUT_INFERENCE";
 GPIO1.pull            = "Pull Down";
-GPIO1.gpioPin.$assign = "boosterpack.31";
+GPIO1.gpioPin.$assign = "boosterpack.32";
 
 GPIO2.$name           = "CONFIG_GPIO_INPUT_POWER";
 GPIO2.pull            = "Pull Down";
@@ -35,13 +36,17 @@ GPIO3.pull            = "Pull Down";
 GPIO3.$name           = "CONFIG_GPIO_INPUT_INDICATOR0";
 GPIO3.gpioPin.$assign = "boosterpack.37";
 
-GPIO6.$name           = "CONFIG_GPIO_INPUT_INDICATOR1";
-GPIO6.pull            = "Pull Down";
-GPIO6.gpioPin.$assign = "boosterpack.36";
+GPIO4.$name           = "CONFIG_GPIO_INPUT_INDICATOR1";
+GPIO4.pull            = "Pull Down";
+GPIO4.gpioPin.$assign = "boosterpack.36";
 
-GPIO7.$name           = "CONFIG_GPIO_INPUT_INDICATOR2";
-GPIO7.pull            = "Pull Down";
-GPIO7.gpioPin.$assign = "boosterpack.9";
+GPIO5.$name           = "CONFIG_GPIO_INPUT_INDICATOR2";
+GPIO5.pull            = "Pull Down";
+GPIO5.gpioPin.$assign = "boosterpack.8";
+
+GPIO6.$name           = "CONFIG_GPIO_INPUT_INDICATOR3";
+GPIO6.pull            = "Pull Down";
+GPIO6.gpioPin.$assign = "boosterpack.19";
 
 Timer1.$name               = "CONFIG_TIMER_0";
 Timer1.timerType           = "32 Bits";

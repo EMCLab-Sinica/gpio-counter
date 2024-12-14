@@ -12,10 +12,13 @@ Tested with the following software components:
 
 # Wire connections
 
-* DIO17 (boosterpack.31) <-> P8.0 on MSP430 or P5.5 on MSP432 (`GPIO_COUNTER_PORT`/`GPIO_COUNTER_PIN`): for counting inferences
-* DIO19 (boosterpack.37) <-> P4.7 on MSP430 or P5.4 on MSP432 (`GPIO_LAYER_COUNTER_PORT`/`GPIO_LAYER_COUNTER_PIN`): for counting layers
-* DIO11 (boosterpack.18) <-> P1.0 on MSP430 or MSP432: for measuring recharging time
-* GND <-> GND on MSP430 or MSP432
+* DIO16 (boosterpack.32): for counting inferences
+* DIO11 (boosterpack.18): for measuring recharging time. Connect to `VBAT_OK` as 3V3 may not be low enough to be considered as GPIO 0 in a short recharging period.
+* DIO19 (boosterpack.37): general indicator 0
+* DIO18 (boosterpack.36): general indicator 1
+* DIO21 (boosterpack.8 ): general indicator 2
+* DIO3  (boosterpack.19): general indicator 3
+* GND <-> GND
 
 See pinout on [CC1352R1 LaunchPad Quick Start Guide](https://www.ti.com/lit/ml/swru525e/swru525e.pdf).
 
